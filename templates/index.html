@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JugalBandi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="hero">
+        <div class="collage" id="collage">
+            {% for image in image_files %}
+                <img src="{{ url_for('static', filename='images/' ~ image) }}" alt="{{ image }}" class="polaroid">
+            {% endfor %}
+        </div>
+        <div class="hero-content">
+            <div class="opaque-box">
+                <h1>JugalBandi</h1>
+                <p>Not just roommates, Find your tribe.</p>
+                <a href="/loading" class="btn" id="try-now-btn">Try Now!</a>s
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const collage = document.getElementById('collage');
+            const polaroids = collage.querySelectorAll('.polaroid');
+            const occupiedAreas = [];
+
+            function isOverlapping(top, left, width, height) {
+                return occupiedAreas.some(area => 
+                    !(top + height < area.top || 
+                      top > area.top + area.height || 
+                      left + width < area.left || 
+                      left > area.left + area.width)
+                );
+            }
+
+            polaroids.forEach(image => {
+                let top, left;
+                const imgWidth = 150;
+                const imgHeight = 150;
+                do {
+                    top = Math.random() * (window.innerHeight - imgHeight - 200) + 100;
+                    left = Math.random() * (window.innerWidth - imgWidth - 200) + 50;
+                } while (isOverlapping(top, left, imgWidth, imgHeight));
+                image.style.top = `${top}px`;
+                image.style.left = `${left}px`;
+                const angle = Math.random() * 20 - 10; // Random angle between -10 and 10 degrees
+                image.style.setProperty('--rotate-angle', `${angle}deg`);
+
+                occupiedAreas.push({top, left, width: imgWidth, height: imgHeight});
+            });
+        });
+    </script>
+</body>
+</html>

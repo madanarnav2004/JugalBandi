@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Board</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #603808 5%, #e6ccb2 100%);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.7); /* Translucent background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+            width: 300px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            text-align: center;
+            color: #603808;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            margin-bottom: 10px;
+        }
+
+        .contact-button {
+            background-color: #603808;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .contact-button:hover {
+            background-color: #5b3d07;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-section select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 30%;
+        }
+
+        .filter-section button {
+            background-color: #603808;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .filter-section button:hover {
+            background-color: #5b3d07;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="filter-section">
+            <input type="text" class="search-bar" placeholder="Search by name...">
+            <select id="collegeFilter" name="college">
+                <option value="">Filter by College</option>
+                <option value="College A">College A</option>
+                <option value="College B">College B</option>
+                <!-- Add more colleges as needed -->
+            </select>
+            <button onclick="applyFilters()">Apply Filters</button>
+        </div>
+
+        {% for user in users %}
+        <div class="card">
+            <h2>{{ user.fullname }}</h2>
+            <p><strong>College:</strong> {{ user.college }}</p>
+            <p><strong>Year:</strong> {{ user.year }}</p>
+            <p><strong>Gender:</strong> {{ user.gender }}</p>
+            <p><strong>Notes:</strong> {{ user.notes }}</p>
+            <a href="#" class="contact-button">Contact</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function applyFilters() {
+            var searchQuery = document.querySelector('.search-bar').value.toLowerCase();
+            var collegeFilter = document.getElementById('collegeFilter').value;
+
+            var cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                var name = card.querySelector('h2').textContent.toLowerCase();
+                var college = card.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
+
+                var nameMatch = name.includes(searchQuery);
+                var collegeMatch = college.includes(collegeFilter.toLowerCase());
+
+                if (nameMatch && collegeMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

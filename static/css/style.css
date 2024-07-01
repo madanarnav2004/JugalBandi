@@ -1,0 +1,295 @@
+/* General Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse, #a47148 5%, #f5e8d4 100%); /* Lighter radial gradient background */
+    font-family: 'Poppins', sans-serif; /* Aesthetic font */
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    overflow: hidden;
+}
+
+.collage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.polaroid {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ddd;
+    transform: rotate(var(--rotate-angle, 0deg));
+    transition: transform 0.8s;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    font-family: 'Playfair Display', serif;
+}
+
+.opaque-box {
+    background-color: rgba(255, 255, 255, 0.9); /* More opaque background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+.hero h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+}
+
+.hero p {
+    font-size: 1.5em;
+    margin-bottom: 1em;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1em;
+    color: white;
+    background-color: #a47148;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s; /* Added transition for transform */
+}
+
+.btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slightly enlarges button on hover */
+}
+
+/* Loading Screen */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5e8d4;
+}
+
+.image-container {
+    margin-bottom: 20px;
+}
+
+.image-container img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ddd;
+    transform: rotate(0deg);
+}
+
+.spinner {
+    margin-bottom: 20px;
+}
+
+.testimonial-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    max-width: 80%;
+    margin-top: 20px;
+}
+
+.testimonial-text {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.stars {
+    margin-bottom: 10px;
+}
+
+.stars .fas {
+    color: gold;
+}
+
+/* Login and Signup Containers */
+.login-container, .signup-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5e8d4;
+}
+
+.login-container h2, .signup-container h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+/* Multi-Step Form Styles */
+.form-container {
+    width: 100%;
+    max-width: 600px; /* Increased max width for better spacing */
+    margin: auto;
+    padding: 30px; /* Increased padding for better spacing */
+    background-color: rgba(255, 255, 255, 0.9); /* More opaque background */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+    animation: fadeIn 0.5s ease-in-out; /* Fade-in animation */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+    animation: slideIn 0.5s ease-in-out; /* Slide-in animation */
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.step-indicator div {
+    width: 25px;
+    height: 25px;
+    margin: 0 5px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #603808;
+    font-weight: bold;
+    transition: background-color 0.3s; /* Added transition */
+}
+
+.step-indicator div.active {
+    background-color: #a47148;
+    color: white;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.navigation-buttons .btn {
+    width: 120px; /* Increased width for better UX */
+    text-align: center;
+    animation: bounce 0.5s; /* Bounce animation */
+}
+
+@keyframes bounce {
+    from {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+.navigation-buttons .btn[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.form-field {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-field label {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    color: #603808;
+}
+
+.form-field input, .form-field textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-field textarea {
+    resize: vertical;
+}
+
+.form-field input:focus, .form-field textarea:focus {
+    outline: none;
+    border-color: #a47148;
+    box-shadow: 0 0 5px rgba(164, 113, 72, 0.5);
+}
+
+.navigation-buttons .btn {
+    background-color: #a47148;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s; /* Added transform transition */
+}
+
+.navigation-buttons .btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Slightly enlarges button on hover */
+}
+
+.navigation-buttons .btn[disabled]:hover {
+    background-color: #ccc;
+}

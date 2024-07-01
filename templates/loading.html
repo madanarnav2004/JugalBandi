@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="image-container">
+            <img id="zoomed-image" src="" alt="Zoomed Polaroid">
+        </div>
+        <div class="testimonial-box">
+            <div class="spinner">
+                <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+            </div>
+            <p class="testimonial-text">This place is awesome!</p>
+            <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <p>- Happy User</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const imageFiles = JSON.parse('{{ image_files | tojson | safe }}');
+            const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
+            const zoomedImage = document.getElementById('zoomed-image');
+            zoomedImage.src = "{{ url_for('static', filename='images/') }}" + randomImage;
+            
+            setTimeout(function() {
+                window.location.href = "/signup";
+            }, 6000); // Redirect to signup page after 6 seconds
+        });
+    </script>
+</body>
+</html>

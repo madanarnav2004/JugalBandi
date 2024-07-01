@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #603808 5%, #e6ccb2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #603808;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-step input, .form-step select, .form-step textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-step button {
+            background: #603808;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .form-step button:hover {
+            background: #5b3d07;
+        }
+
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-navigation button {
+            width: 48%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Update Profile</h1>
+        <form id="multi-step-form" action="{{ url_for('profile') }}" method="POST">
+            <div class="form-step active">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" value="{{ current_user.fullname }}">
+                <div class="form-navigation">
+                    <button type="button" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            <div class="form-step">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                    <option value="male" {% if current_user.gender == 'male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if current_user.gender == 'female' %}selected{% endif %}>Female</option>
+                </select>
+                <div class="form-navigation">
+                    <button type="button" onclick="prevStep()">Previous</button>
+                    <button type="button" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            <div class="form-step">
+                <label for="age">Age</label>
+                <input type="text" id="age" name="age" value="{{ current_user.age }}">
+                <div class="form-navigation">
+                    <button type="button" onclick="prevStep()">Previous</button>
+                    <button type="button" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            <div class="form-step">
+                <label for="college">College</label>
+                <input type="text" id="college" name="college" value="{{ current_user.college }}">
+                <div class="form-navigation">
+                    <button type="button" onclick="prevStep()">Previous</button>
+                    <button type="button" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            <div class="form-step">
+                <label for="stream">Stream</label>
+                <input type="text" id="stream" name="stream" value="{{ current_user.stream }}">
+                <div class="form-navigation">
+                    <button type="button" onclick="prevStep()">Previous</button>
+                    <button type="button" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            <div class="form-step">
+                <label for="move_in">Move-in Date</label>
+                <input type="text" id="move_in" name="move_in" value="{{ current_user.move_in }}">
+                <div class="form-navigation">
+                    <button type="button" onclick="prevStep()">Previous</button>
+                    <button type="button" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            <div class="form-step">
+                <label for="year">Year</label>
+                <input type="text" id="year" name="year" value="{{ current_user.year }}">
+                <div class="form-navigation">
+                    <button type="button" onclick="prevStep()">Previous</button>
+                    <button type="button" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            <div class="form-step">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes">{{ current_user.notes }}</textarea>
+                <div class="form-navigation">
+                    <button type="button" onclick="prevStep()">Previous</button>
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll('.form-step');
+
+        function showStep(step) {
+            steps.forEach((step, index) => {
+                step.classList.toggle('active', index === currentStep);
+            });
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        showStep(currentStep);
+    </script>
+</body>
+</html>
