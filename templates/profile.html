@@ -71,106 +71,190 @@
         .form-navigation button {
             width: 48%;
         }
+        .profile-picture-container {
+            text-align: center;
+        }
+        .profile-picture {
+            width: 200px; /* Adjust as needed */
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover; /* To make the image fit the circle */
+        }
+        .interests-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .interest-tag {
+            background-color: #a47148; /* Or any other color you prefer */
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 20px;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .chat-message {
+            opacity: 0; /* Start with 0 opacity */
+            transition: opacity 0.5s ease-in-out; /* Smooth transition */
+        }
+
+        .chat-message.active {
+            opacity: 1; /* Full opacity when active */
+        }
+
+        .user-message {
+            text-align: right;
+            background-color: #e6ccb2;
+        }
+
+        .bot-message {
+            text-align: left;
+            background-color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Update Profile</h1>
-        <form id="multi-step-form" action="{{ url_for('profile') }}" method="POST">
-            <div class="form-step active">
-                <label for="fullname">Full Name</label>
-                <input type="text" id="fullname" name="fullname" value="{{ current_user.fullname }}">
-                <div class="form-navigation">
-                    <button type="button" onclick="nextStep()">Next</button>
-                </div>
+    <div class="chat-container">
+        <h1>Let's Get to Know You!</h1>
+        <div id="chat-messages">
             </div>
-            <div class="form-step">
-                <label for="gender">Gender</label>
-                <select id="gender" name="gender">
-                    <option value="male" {% if current_user.gender == 'male' %}selected{% endif %}>Male</option>
-                    <option value="female" {% if current_user.gender == 'female' %}selected{% endif %}>Female</option>
-                </select>
-                <div class="form-navigation">
-                    <button type="button" onclick="prevStep()">Previous</button>
-                    <button type="button" onclick="nextStep()">Next</button>
-                </div>
-            </div>
-            <div class="form-step">
-                <label for="age">Age</label>
-                <input type="text" id="age" name="age" value="{{ current_user.age }}">
-                <div class="form-navigation">
-                    <button type="button" onclick="prevStep()">Previous</button>
-                    <button type="button" onclick="nextStep()">Next</button>
-                </div>
-            </div>
-            <div class="form-step">
-                <label for="college">College</label>
-                <input type="text" id="college" name="college" value="{{ current_user.college }}">
-                <div class="form-navigation">
-                    <button type="button" onclick="prevStep()">Previous</button>
-                    <button type="button" onclick="nextStep()">Next</button>
-                </div>
-            </div>
-            <div class="form-step">
-                <label for="stream">Stream</label>
-                <input type="text" id="stream" name="stream" value="{{ current_user.stream }}">
-                <div class="form-navigation">
-                    <button type="button" onclick="prevStep()">Previous</button>
-                    <button type="button" onclick="nextStep()">Next</button>
-                </div>
-            </div>
-            <div class="form-step">
-                <label for="move_in">Move-in Date</label>
-                <input type="text" id="move_in" name="move_in" value="{{ current_user.move_in }}">
-                <div class="form-navigation">
-                    <button type="button" onclick="prevStep()">Previous</button>
-                    <button type="button" onclick="nextStep()">Next</button>
-                </div>
-            </div>
-            <div class="form-step">
-                <label for="year">Year</label>
-                <input type="text" id="year" name="year" value="{{ current_user.year }}">
-                <div class="form-navigation">
-                    <button type="button" onclick="prevStep()">Previous</button>
-                    <button type="button" onclick="nextStep()">Next</button>
-                </div>
-            </div>
-            <div class="form-step">
-                <label for="notes">Notes</label>
-                <textarea id="notes" name="notes">{{ current_user.notes }}</textarea>
-                <div class="form-navigation">
-                    <button type="button" onclick="prevStep()">Previous</button>
-                    <button type="submit">Submit</button>
-                </div>
-            </div>
+
+        <form id="user-input-form">
+            <input type="text" id="user-input" autocomplete="off">
+            <button type="submit">Send</button>
         </form>
     </div>
 
     <script>
-        let currentStep = 0;
-        const steps = document.querySelectorAll('.form-step');
+        const chatMessages = document.getElementById('chat-messages');
+        const userInputForm = document.getElementById('user-input-form');
+        const userInput = document.getElementById('user-input');
+        let currentQuestionIndex = 0;
+        let userData = {}; // Store user's responses
 
-        function showStep(step) {
-            steps.forEach((step, index) => {
-                step.classList.toggle('active', index === currentStep);
+       
+    // ... other questions ...
+    // Add this question
+
+        const questions = [
+            "Hi there! What's your name?",
+            "Nice to meet you! What's your gender?",
+            "Got it! How old are you?",
+            "Where do you go to college?",
+            "What's your field of study?",
+            "When are you looking to move in?",
+            "Tell us a bit about yourself and your ideal flatmate.",
+            "Please enter your mobile number (with country code):" 
+             
+        ];
+        
+
+        function displayMessage(message, sender) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', `${sender}-message`);
+            messageElement.textContent = message;
+            setTimeout(() => {
+                messageElement.classList.add('active'); 
+            }, 50); // Adjust the delay (in milliseconds) for desired effect
+        
+
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight; 
+            // Scroll to bottom
+        }
+        function createImageInput() {
+            const imageInput = document.createElement('input');
+            imageInput.type = 'text';
+            imageInput.id = 'profile-photo-url';
+            imageInput.placeholder = 'Paste your profile picture link here';
+
+            const submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.textContent = 'Submit';
+
+            userInputForm.innerHTML = ''; // Clear previous input
+            userInputForm.appendChild(imageInput);
+            userInputForm.appendChild(submitButton);
+        }
+
+        function askQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const currentQuestion = questions[currentQuestionIndex];
+                displayMessage(currentQuestion, 'bot');
+
+                // Clear previous form and add appropriate input if needed
+                userInputForm.innerHTML = '';
+                if (currentQuestion.includes("profile picture")) {
+                    createImageInput();
+                } else {
+                    const textInput = document.createElement('input');
+                    textInput.type = 'text';
+                    textInput.id = 'user-input';
+                    textInput.autocomplete = 'off';
+
+                    const submitButton = document.createElement('button');
+                    submitButton.type = 'submit';
+                    submitButton.textContent = 'Send';
+
+                    userInputForm.appendChild(textInput);
+                    userInputForm.appendChild(submitButton);
+                }
+
+                currentQuestionIndex++;
+            } else {
+                submitUserData(); // All questions asked, submit data to backend
+            }
+        }
+
+        
+        function submitUserData() {
+            // Get the profile picture URL if provided
+            const profilePhotoUrl = document.getElementById('profile-photo-url')?.value;
+
+            fetch('/profile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...userData,  // Include previous answers
+                    [questions[currentQuestionIndex - 1]]: profilePhotoUrl || '' // Add profile photo URL if available
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/board';
+                } else {
+                    displayMessage("Error saving profile. Please try again.", 'bot');
+                }
             });
         }
 
-        function nextStep() {
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                showStep(currentStep);
+        userInputForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const answerInput = document.getElementById('user-input') || document.getElementById('profile-photo-url');
+            const answer = answerInput.value.trim();
+            
+            if (answer) {
+                displayMessage(answer, 'user');
+                userData[questions[currentQuestionIndex - 1]] = answer; // Store answer
+                askQuestion();
             }
-        }
+        });
 
-        function prevStep() {
-            if (currentStep > 0) {
-                currentStep--;
-                showStep(currentStep);
-            }
-        }
-
-        showStep(currentStep);
+        askQuestion(); 
     </script>
 </body>
 </html>

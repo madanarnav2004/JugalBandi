@@ -1,157 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Board</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #603808 5%, #e6ccb2 100%);
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .container {
+        .card-container {  /* Container for all user cards */
             display: flex;
-            justify-content: center;
-            align-items: center;
             flex-wrap: wrap;
-            padding: 20px;
+            justify-content: center;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.7); /* Translucent background */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            /* ... your existing card styles ... */
+            flex: 0 0 300px; /* Each card takes 300px width, adjust as needed */
             margin: 10px;
-            width: 300px;
-            transition: transform 0.3s ease-in-out;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h2 {
-            text-align: center;
-            color: #603808;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            margin-bottom: 10px;
-        }
-
-        .contact-button {
-            background-color: #603808;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .contact-button:hover {
-            background-color: #5b3d07;
-        }
-
-        .search-bar {
-            margin-bottom: 20px;
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .filter-section {
+        .contact-button a {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .filter-section select {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 30%;
-        }
-
-        .filter-section button {
-            background-color: #603808;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
             text-decoration: none;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        .filter-section button:hover {
-            background-color: #5b3d07;
+        .contact-button i {
+            margin-right: 5px;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="filter-section">
             <input type="text" class="search-bar" placeholder="Search by name...">
             <select id="collegeFilter" name="college">
                 <option value="">Filter by College</option>
-                <option value="College A">College A</option>
-                <option value="College B">College B</option>
-                <!-- Add more colleges as needed -->
+                {% for college in colleges %}
+                    <option value="{{ college }}">{{ college }}</option>
+                {% endfor %}
+            </select>
+            <select id="genderFilter" name="gender">
+                <option value="">Filter by Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
             </select>
             <button onclick="applyFilters()">Apply Filters</button>
         </div>
 
-        {% for user in users %}
-        <div class="card">
-            <h2>{{ user.fullname }}</h2>
-            <p><strong>College:</strong> {{ user.college }}</p>
-            <p><strong>Year:</strong> {{ user.year }}</p>
-            <p><strong>Gender:</strong> {{ user.gender }}</p>
-            <p><strong>Notes:</strong> {{ user.notes }}</p>
-            <a href="#" class="contact-button">Contact</a>
+        <div id="profiles-container" class="card-container">  
         </div>
-        {% endfor %}
     </div>
 
     <script>
         function applyFilters() {
-            var searchQuery = document.querySelector('.search-bar').value.toLowerCase();
-            var collegeFilter = document.getElementById('collegeFilter').value;
+            const searchQuery = document.querySelector('.search-bar').value.toLowerCase();
+            const collegeFilter = document.getElementById('collegeFilter').value;
+            const genderFilter = document.getElementById('genderFilter').value;
 
-            var cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                var name = card.querySelector('h2').textContent.toLowerCase();
-                var college = card.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
-
-                var nameMatch = name.includes(searchQuery);
-                var collegeMatch = college.includes(collegeFilter.toLowerCase());
-
-                if (nameMatch && collegeMatch) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            fetchMatches(collegeFilter, genderFilter);
         }
+
+        function fetchMatches(collegeFilter = '', genderFilter = '') {
+            fetch(`/get_matches?college=${collegeFilter}&gender=${genderFilter}`)
+                .then(response => response.json())
+                .then(data => {
+                    const profilesContainer = document.getElementById('profiles-container');
+                    profilesContainer.innerHTML = ''; // Clear previous results
+
+                    if (data.matches.length === 0) {
+                        profilesContainer.innerHTML = '<p>No matching profiles found.</p>';
+                        return;
+                    }
+
+                    data.matches.forEach(match => {
+                        const whatsappLink = match.mobile_number ? 
+                            `https://wa.me/${match.mobile_number}?text=Hi%20${match.fullname},%20I%20found%20you%20on%20JugalBandi!` :
+                            "#";
+
+                        const profileCard = `
+                            <div class="card" data-name="${match.fullname.toLowerCase()}"
+                                 data-college="${match.college?.toLowerCase() || ''}"
+                                 data-gender="${match.gender?.toLowerCase() || ''}"
+                                 data-match-percentage="${match.match_percentage}"
+                                 data-mobile-number="${match.mobile_number || ''}">
+
+                                <h2>${match.fullname}</h2>
+                                <p class="match-percentage">${match.match_percentage}% Match</p>
+                                <p><strong>College:</strong> ${match.college || 'Not specified'}</p>
+                                <p><strong>Gender:</strong> ${match.gender || 'Not specified'}</p>
+                                <p><strong>Age:</strong> ${match.age || 'Not specified'}</p>
+                                <p><strong>Bio:</strong> ${match.bio || 'Not specified'}</p>
+                                <button class="contact-button" onclick="openWhatsAppChat('${match.mobile_number}', '${match.fullname}')">
+                                    <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                                </button>
+                            </div>
+                        `;
+                        profilesContainer.innerHTML += profileCard;
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching matches:", error);
+                    profilesContainer.innerHTML = '<p>An error occurred while fetching profiles.</p>'; 
+                });
+        }
+
+        function openWhatsAppChat(mobileNumber, fullName) {
+            if (mobileNumber) {
+                const url = `https://wa.me/${mobileNumber}?text=Hi%20${fullName},%20I%20found%20you%20on%20JugalBandi!`;
+                window.open(url, '_blank');
+            } else {
+                alert("This user hasn't provided their WhatsApp number.");
+            }
+        }
+
+        // Fetch initial matches on page load (without filters)
+        fetchMatches();
     </script>
 </body>
 </html>
